@@ -8,5 +8,5 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
 
   if (!validatedFields.success) return { error: "Invalid Fields!" };
 
-  return { success: "Email sent successfully!" };
+  return { success: "Verification email sent!" };
 };
