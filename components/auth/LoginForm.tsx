@@ -1,10 +1,15 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import CardWrapper from "./CardWrapper";
-import { z } from "zod";
+import { login } from "@/actions/login";
 import { LoginSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
+import { useState, useTransition } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import FormError from "../FormError";
+import FormSuccess from "../FormSuccess";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -14,11 +19,13 @@ import {
   FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import FormError from "../FormError";
-import FormSuccess from "../FormSuccess";
+import CardWrapper from "./CardWrapper";
 
 const LoginForm = () => {
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
+  const [isPending, startTransition] = useTransition();
+
   const form = useForm<z.infer<typeof LoginSchema>>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -28,7 +35,15 @@ const LoginForm = () => {
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    console.log(values);
+    setError("");
+    setSuccess("");
+
+    startTransition(() => {
+      login(values).then((data) => {
+        setError(data.error);
+        setSuccess(data.success);
+      });
+    });
   };
 
   return (
@@ -50,6 +65,7 @@ const LoginForm = () => {
                   <FormControl>
                     <Input
                       {...field}
+                      disabled={isPending}
                       placeholder="name@example.com"
                       type="email"
                     />
@@ -66,7 +82,12 @@ const LoginForm = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Password" type="password" />
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder="Password"
+                      type="password"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -74,11 +95,11 @@ const LoginForm = () => {
             />
           </div>
 
-          <FormError message="" />
-          <FormSuccess message=""/>
+          <FormError message={error} />
+          <FormSuccess message={success} />
 
-          <Button type="submit" className=" w-full">
-            Login
+          <Button disabled={isPending} type="submit" className=" w-full">
+            {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Login"}
           </Button>
         </form>
       </Form>
