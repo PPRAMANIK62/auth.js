@@ -9,7 +9,7 @@ type Props = {
 const BackgroundPattern = ({ children }: Props) => {
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center overflow-hidden rounded-lg border bg-background md:shadow-xl">
-      {children}
+      <div className="z-10">{children}</div>
 
       <InteractiveGridPattern
         className={cn(
