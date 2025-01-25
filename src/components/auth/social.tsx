@@ -1,27 +1,27 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
-import { Button } from "../ui/button";
 
 const Social = () => {
   return (
     <div className=" flex items-center w-full gap-x-2">
       <Button
         size={"lg"}
-        className=" w-full"
+        className="w-full"
         variant={"outline"}
         onClick={() => {}}
       >
-        <FcGoogle className=" h-5 w-5" />
+        <FcGoogle className="size-8" />
       </Button>
       <Button
         size={"lg"}
-        className=" w-full"
+        className="w-full"
         variant={"outline"}
         onClick={() => {}}
       >
-        <FaGithub className=" h-5 w-5" />
+        <FaGithub className="size-8" />
       </Button>
     </div>
   );
