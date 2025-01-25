@@ -1,5 +1,6 @@
 "use client";
 
+import { login } from "@/actions/login";
 import FormError from "@/components/form-error";
 import FormSuccess from "@/components/form-success";
 import { Button } from "@/components/ui/button";
@@ -31,13 +32,19 @@ const LoginForm = () => {
       email: "",
       password: "",
     },
+    mode: "onChange",
   });
 
   const onSubmit = (values: z.infer<typeof LoginSchema>) => {
-    setError("Error");
-    setSuccess("Success");
+    setError("");
+    setSuccess("");
 
-    console.log(values);
+    startTransition(() => {
+      login(values).then((data) => {
+        setError(data?.error);
+        setSuccess(data?.success);
+      });
+    });
   };
 
   return (
