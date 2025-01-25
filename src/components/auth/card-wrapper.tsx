@@ -24,16 +24,19 @@ const CardWrapper = ({
   showSocial,
 }: Props) => {
   return (
-    <Card className="w-[400px] shadow-md">
+    <Card className="max-w-lg w-full mx-auto rounded-none md:rounded-2xl p-2 shadow-input bg-white dark:bg-black">
       <CardHeader>
         <Header label={headerLabel} />
       </CardHeader>
       <CardContent>{children}</CardContent>
 
       {showSocial && (
-        <CardFooter>
-          <Social />
-        </CardFooter>
+        <>
+          <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent mb-6 h-[1px] w-full" />
+          <CardFooter>
+            <Social />
+          </CardFooter>
+        </>
       )}
 
       <CardFooter>
