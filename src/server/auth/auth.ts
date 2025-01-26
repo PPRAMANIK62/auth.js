@@ -8,6 +8,14 @@ const prisma = new PrismaClient();
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
+    // signIn: async ({ user }) => {
+    //   const existingUser = await getUserById(user.id!);
+    //   if (!existingUser || !existingUser.emailVerified) {
+    //     return false;
+    //   }
+
+    //   return true;
+    // },
     session: async ({ session, token }) => {
       return {
         ...session,
