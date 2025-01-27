@@ -1,6 +1,7 @@
 "use server";
 
 import { getUserByEmail } from "@/data/user";
+import { sendVerificationEmail } from "@/lib/mail";
 import { generateVerificationToken } from "@/lib/tokens";
 import { LoginSchema } from "@/schemas";
 import { signIn } from "@/server/auth/auth";
@@ -25,7 +26,11 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   }
 
   if (!existingUser.emailVerified) {
-    await generateVerificationToken(existingUser.email);
+    const verificationToken = await generateVerificationToken(
+      existingUser.email
+    );
+    await sendVerificationEmail(existingUser.email, verificationToken.token);
+
     return { success: "Confirmation email sent!" };
   }
 
