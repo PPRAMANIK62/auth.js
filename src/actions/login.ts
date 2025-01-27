@@ -1,5 +1,7 @@
 "use server";
 
+import { getUserByEmail } from "@/data/user";
+import { generateVerificationToken } from "@/lib/tokens";
 import { LoginSchema } from "@/schemas";
 import { signIn } from "@/server/auth/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/server/auth/routes";
@@ -16,6 +18,16 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
   }
 
   const { email, password } = validatedFields.data;
+
+  const existingUser = await getUserByEmail(email);
+  if (!existingUser || !existingUser.email || !existingUser.password) {
+    return { error: "Invalid credentials!" };
+  }
+
+  if (!existingUser.emailVerified) {
+    await generateVerificationToken(existingUser.email);
+    return { success: "Confirmation email sent!" };
+  }
 
   try {
     await signIn("credentials", {
@@ -37,7 +49,7 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     }
   }
 
-  return { success: "Email sent!" };
+  return { success: "Successfully logged in!" };
 };
 
 export const loginWithProvider = async (provider: "google" | "github") => {
@@ -51,5 +63,5 @@ export const loginWithProvider = async (provider: "google" | "github") => {
     return { error: "Something went wrong!" };
   }
 
-  return { success: "Email sent!" };
+  return { success: "Successfully logged in!" };
 };
