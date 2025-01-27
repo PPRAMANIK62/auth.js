@@ -4,6 +4,8 @@ import { LoginSchema } from "@/schemas";
 import { signIn } from "@/server/auth/auth";
 import { DEFAULT_LOGIN_REDIRECT } from "@/server/auth/routes";
 import { AuthError } from "next-auth";
+import { isRedirectError } from "next/dist/client/components/redirect-error";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 
 export const login = async (values: z.infer<typeof LoginSchema>) => {
@@ -19,10 +21,12 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
     await signIn("credentials", {
       email,
       password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
+    redirect(DEFAULT_LOGIN_REDIRECT);
   } catch (error) {
     console.error(error);
+    if (isRedirectError(error)) throw error;
+
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
@@ -31,8 +35,20 @@ export const login = async (values: z.infer<typeof LoginSchema>) => {
           return { error: "Something went wrong!" };
       }
     }
+  }
 
-    throw error;
+  return { success: "Email sent!" };
+};
+
+export const loginWithProvider = async (provider: "google" | "github") => {
+  try {
+    await signIn(provider);
+    redirect(DEFAULT_LOGIN_REDIRECT);
+  } catch (error) {
+    console.error(error);
+    if (isRedirectError(error)) throw error;
+
+    return { error: "Something went wrong!" };
   }
 
   return { success: "Email sent!" };
