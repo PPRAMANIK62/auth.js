@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
 import { cn } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import React from "react";
@@ -14,7 +15,7 @@ export const InteractiveHoverButton = React.forwardRef<
       ref={ref}
       className={cn(
         "group relative w-auto cursor-pointer overflow-hidden rounded-full bg-primary p-2 px-8 text-center font-semibold",
-        className,
+        className
       )}
       {...props}
     >
